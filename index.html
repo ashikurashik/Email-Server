@@ -1,0 +1,275 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cisco Packet Tracer Configuration Guide</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 15mm;
+            background-color: #f4f7f6;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6;
+        }
+        .header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border-bottom: 5px solid #18bc9c;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24pt;
+        }
+        .container {
+            padding: 20px;
+        }
+        .section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #2c3e50;
+            border-left: 5px solid #18bc9c;
+            padding-left: 10px;
+            font-size: 16pt;
+            margin-top: 0;
+        }
+        h3 {
+            color: #e67e22;
+            font-size: 13pt;
+        }
+        .left-site {
+            margin-left: 50px;
+        }
+        .left-site img {
+         width: 50%;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #ecf0f1;
+            font-weight: bold;
+        }
+        code, pre {
+            background-color: #272822;
+            color: #f8f8f2;
+            padding: 10px;
+            display: block;
+            border-radius: 5px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 10pt;
+            overflow-x: auto;
+        }
+        .step-label {
+            font-weight: bold;
+            color: #18bc9c;
+        }
+        .footer {
+            text-align: center;
+            font-size: 9pt;
+            color: #7f8c8d;
+            margin-top: 30px;
+        }
+        .common {
+            margin: 0 0 0 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Network Configuration Guide</h1>
+        <p>Email Server Topology: Branch-1 | Head-Office | Branch-2</p>
+    </div>
+
+    <div class="container">        
+        <div class="section">
+            <h2>Network Topology & Components</h2>
+        <ul>
+            <li><strong>Router:</strong> 3x Cisco 2911 </li>
+            <li><strong>Switch:</strong> 3x Cisco 2960 </li>
+            <li><strong>End Devices:</strong> 6x Generic PCs</li>
+            <li><strong>Server Devices:</strong> 3x Server</li>
+            <li><strong>Cabling:</strong> Copper Straight-Through & Serial Cables</li>
+        </ul>
+            <h2>Step 1: Router IP Address Configuration</h2>
+            <p>Assign IPs to the physical interfaces of the routers as per the topology diagram.</p>
+            
+            <h3>Branch-Office-1</h3>
+            <pre>
+                Router(config)#hostname BR-1
+                BR-1(config)#int g0/1
+                BR-1(config-if)#ip add 10.10.10.1 255.255.255.0
+                BR-1(config-if)#no sh
+                BR-1(config-if)#int g0/0
+                BR-1(config-if)#ip add 20.20.20.1 255.255.255.0
+                BR-1(config-if)#exit
+                BR-1(config)#ip dhcp pool BR-1-Lan
+                BR-1(dhcp-config)#network 10.10.10.0 255.255.255.0
+                BR-1(dhcp-config)#default-router 10.10.10.1
+                BR-1(dhcp-config)#dns-server 10.10.10.10
+            </pre>
+
+            <h3>Head-Office</h3>
+            <pre>
+                Router(config)#hostname Head-Office
+                Head-Office(config)#int g0/0
+                Head-Office(config-if)#ip add 20.20.20.2 255.255.255.0
+                Head-Office(config-if)#no sh
+                Head-Office(config-if)#hostname Head-Office
+                Head-Office(config)#int g0/1
+                Head-Office(config-if)#ip add 40.40.40.1 255.255.255.0
+                Head-Office(config-if)#no sh
+                Head-Office(config-if)#exit
+                Head-Office(config)#int g0/2
+                Head-Office(config-if)#ip add 30.30.30.1 255.255.255.0
+                Head-Office(config-if)#no sh
+                Head-Office(config-if)#exit
+                Head-Office(config)#ip dhcp pool HO-lan
+                Head-Office(dhcp-config)#network 30.30.30.0 255.255.255.0
+                Head-Office(dhcp-config)#default-router 30.30.30.1
+                Head-Office(dhcp-config)#dns-server 30.30.30.10
+            </pre>
+
+            <h3>Branch-Office-2</h3>
+            <pre>
+                Router(config)#hostname BR-2
+                BR-2(config)#int g0/0
+                BR-2(config-if)#ip add 40.40.40.2 255.255.255.0
+                BR-2(config-if)#no sh
+                BR-2(config-if)#int g0/1
+                BR-2(config-if)#ip add 50.50.50.1 255.255.255.0
+                BR-2(config-if)#no sh
+                BR-2(config-if)#ip dhcp pool BR-2-Lan
+                BR-2(dhcp-config)#network 50.50.50.0 255.255.255.0
+                BR-2(dhcp-config)#default-router 50.50.50.1
+                BR-2(dhcp-config)#dns-server 50.50.50.10
+            </pre>
+        </div>
+
+        <div class="section">
+            <h2>Step 2: Dynamic Routing (RIP)</h2>
+            <p>To ensure all networks can communicate, enable RIP version 2 on all routers.</p>
+            <h2 class="common">BR-1</h2>
+            <pre>
+                BR-1(config)#router rip 
+                BR-1(config-router)#version 2
+                BR-1(config-router)#no auto-summary 
+                BR-1(config-router)#network 10.10.10.0
+                BR-1(config-router)#network 20.20.20.0
+                BR-1(config-router)#network 30.30.30.0
+                BR-1(config-router)#network 40.40.40.0
+                BR-1(config-router)#network 50.50.50.0
+            </pre><br>
+            <h2 class="common">Head-Office</h2>
+            <pre>
+                Head-Office(config)#router rip 
+                Head-Office(config-router)#version 2
+                Head-Office(config-router)#no auto-summary 
+                Head-Office(config-router)#network 10.10.10.0
+                Head-Office(config-router)#network 20.20.20.0
+                Head-Office(config-router)#network 30.30.30.0
+                Head-Office(config-router)#network 40.40.40.0
+                Head-Office(config-router)#network 50.50.50.0
+            </pre><br>
+            <h2 class="common">BR-2</h2>
+            <pre>
+                BR-2(config)#router rip 
+                BR-2(config-router)#version 2
+                BR-2(config-router)#no auto-summary 
+                BR-2(config-router)#network 10.10.10.0
+                BR-2(config-router)#network 20.20.20.0
+                BR-2(config-router)#network 30.30.30.0
+                BR-2(config-router)#network 40.40.40.0
+                BR-2(config-router)#network 50.50.50.0
+            </pre>
+            <p><i>Note: Apply this to all three routers so they share their routing tables.</i></p>
+        </div>
+
+        <div class="section">
+            <h2>Step 3: Server Services Setup</h2>
+            <h3>A. DNS Server (Head-Office)</h3>
+            <ul>
+                <li><strong>IP Address:</strong> 30.30.30.4 | <strong>Gateway:</strong> 30.30.30.1</li>
+                <li>Go to <b>Services > DNS</b>: Turn ON.</li>
+                <li>Add Record: <span class="step-label">idb.com</span> -> 10.10.10.10</li>
+                <li>Add Record: <span class="step-label">ak-it.com</span> -> 50.50.50.10</li>
+            </ul>
+
+            <h3>B. Gmail-Server (Branch-1)</h3>
+            <ul>
+                <li><strong>IP Address:</strong> 10.10.10.10 | <strong>Gateway:</strong> 10.10.10.1</li>
+                <li>Go to <b>Services > Email</b>: Turn ON SMTP & POP3.</li>
+                <li>Domain Name: <span class="step-label">idb.com</span> (Click Set).</li>
+                <li>Users: <br>1. ashik (pass: a)<br>2. nasim (pass: n)</li>
+            </ul>
+
+            <h3>C. Yahoo-Server (Branch-2)</h3>
+            <ul>
+                <li><strong>IP Address:</strong> 50.50.50.10 | <strong>GW:</strong> 50.50.50.1</li>
+                <li>Go to <b>Services > Email</b>: Domain Name: <span class="step-label">ak-it.com</span>.</li>
+                <li>Users: <br>1. kawsar (pass: k)<br>2. rayhan (pass: r)</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Step 4: End User Configuration</h2>
+            <p>Every PC (Ashik, Nasim, Rifat, Kawsar, etc.) must have the correct IP, Gateway, and <b>DNS Server IP (30.30.30.4)</b>.</p>
+            <table>
+                <tr>
+                    <th>Field</th>
+                    <th>Example (Ashik's PC)</th>
+                </tr>
+                <tr>
+                    <td>Your Name</td>
+                    <td>Ashik</td>
+                </tr>
+                <tr>
+                    <td>Email Address</td>
+                    <td>ashik@gmail.com</td>
+                </tr>
+                <tr>
+                    <td>Incoming Mail Server</td>
+                    <td>10.10.10.10</td>
+                </tr>
+                <tr>
+                    <td>Outgoing Mail Server</td>
+                    <td>10.10.10.10</td>
+                </tr>
+            </table>
+        </div>
+        <div class="section">
+            <h2>Final Output</h2>
+            <img src="../Email/1.jpg" alt="">
+            <img class="left-site" src="../Email/2.jpg" alt="">
+        </div>
+            <div class="section">
+                    <p>__________________________</p>
+                    <p><b>Md Ashikur Rahman</b></p>
+                    <p>Network Engineer</p>
+                </div>
+            <div class="footer">
+            <p>Generated for Cisco Packet Tracer Lab Training</p>
+        </div>
+    </div>
+</body>
+</html>
